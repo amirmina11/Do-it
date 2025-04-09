@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ar">
+    <link rel="stylesheet" href="style.css"><head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>منظم المهام مع إحصائيات</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: white;
+      text-align: center;
+      padding: 30px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    h1, #points {
+      background: rgba(255, 255, 255, 0.1);
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    input, button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      border-radius: 6px;
+      border: none;
+    }
+
+    input {
+      width: 250px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #taskSection, #timerSection, #completedTasks, #stats {
+      margin-top: 30px;
+    }
+
+    #timer {
+      font-size: 24px;
+      margin: 10px 0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: #1f1f1f;
+      margin: 5px auto;
+      padding: 10px;
+      width: 300px;
+      border-radius: 8px;
+    }
+
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      animation: fadeOut 3s forwards;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>منظم المهام مع مؤقت ونقاط</h1>
+
+  <div id="points">النقاط: <span id="score">0</span></div>
+
+  <div id="taskSection">
+    <input type="text" id="taskInput" placeholder="اكتب مهمتك هنا">
+    <button onclick="startTask()">ابدأ المهمة</button>
+  </div>
+
+  <div id="timerSection" style="display:none;">
+    <div>المهمة: <span id="currentTask"></span></div>
+    <div id="timer">25:00</div>
+    <button onclick="completeTask()">أنهيت المهمة</button>
+    <button onclick="cancelTask()">إلغاء</button>
+  </div>
+
+  <div id="completedTasks">
+    <h3>المهام المنجزة:</h3>
+    <ul id="taskList"></ul>
+  </div>
+
+  <div id="stats">
+    <h3>إحصائيات</h3>
+    <p>عدد المهام: <span id="tasksCount">0</span></p>
+    <p>الوقت المنتج (دقيقة): <span id="totalTime">0</span></p>
+    <p>أعلى سلسلة إنجاز: <span id="streak">0</span></p>
+  </div>
+
+  <audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3" preload="auto"></audio>
+
+  <script>
+    let timer;
+    let timeLeft = 25 * 60;
+    let score = 0;
+    let completed = [];
+    let streak = 0;
+    let maxStreak = 0;
+
+    function startTask() {
+      const task = document.getElementById("taskInput").value.trim();
+      if (task === "") {
+        alert("من فضلك اكتب المهمة أولاً");
+        return;
+      }
+
+      document.getElementById("currentTask").innerText = task;
+      document.getElementById("taskSection").style.display = "none";
+      document.getElementById("timerSection").style.display = "block";
+
+      timeLeft = 25 * 60;
+      updateTimerDisplay();
+      timer = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          streak = 0;
+          alert("انتهى الوقت! حاول مرة أخرى");
+          resetView();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const seconds = (timeLeft % 60).toString().padStart(2, '0');
+      document.getElementById("timer").innerText = ${minutes}:${seconds};
+    }
+
+    function completeTask() {
+      clearInterval(timer);
+      const taskText = document.getElementById("currentTask").innerText;
+
+      score += 10;
+      streak += 1;
+      if (streak > maxStreak) maxStreak = streak;
+
+      completed.push(taskText);
+
+      document.getElementById("score").innerText = score;
+      document.getElementById("successSound").play();
+      launchConfetti();
+
+      renderTasks();
+      renderStats();
+      resetView();
+    }
+
+    function cancelTask() {
+      clearInterval(timer);
+      streak = 0;
+      resetView();
+    }
+
+    function resetView() {
+      document.getElementById("taskInput").value = "";
+      document.getElementById("taskSection").style.display = "block";
+      document.getElementById("timerSection").style.display = "none";
+    }
+
+    function renderTasks() {
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+      completed.forEach(task => {
+        const li = document.createElement("li");
+        li.textContent = task;
+        list.appendChild(li);
+      });
+    }
+
+    function renderStats() {
+      document.getElementById("tasksCount").innerText = completed.length;
+      document.getElementById("totalTime").innerText = completed.length * 25;
+      document.getElementById("streak").innerText = maxStreak;
+    }
+
+    function launchConfetti() {
+      const confetti = document.createElement("div");
+      confetti.className = "confetti";
+      confetti.innerHTML = "✨✨✨ تهانينا! ✨✨✨";
+      confetti.style.fontSize = "40px";
+      confetti.style.color = "#ffd700";
+      confetti.style.textAlign = "center";
+      confetti.style.paddingTop = "20%";
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 3000);
+    }
+  </script>
+
+</body>
+</html>
