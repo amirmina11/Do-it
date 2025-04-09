@@ -26,4 +26,17 @@ function startTask() {
         resetView();
       }
     }, 1000);
-  }
+  }function addTask() {
+    const taskInput = document.getElementById('task');
+    const taskList = document.getElementById('taskList');
+    const task = taskInput.value;
+
+    if (task) {
+        const li = document.createElement('li');
+        li.textContent = task;
+        taskList.appendChild(li);
+        taskInput.value = ''; // مسح الحقل بعد إضافة المهمة
+    } else {
+        alert("من فضلك اكتب المهمة أولاً!");
+    }
+}

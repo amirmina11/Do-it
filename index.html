@@ -1,219 +1,272 @@
 <!DOCTYPE html>
-<html lang="ar">
-    <link rel="stylesheet" href="style.css"><head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>منظم المهام مع إحصائيات</title>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منظم المهام الذكي</title>
   <style>
+    /* أنماط التصميم الأصلية المعدلة */
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #121212;
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       color: white;
       text-align: center;
-      padding: 30px;
+      padding: 20px;
       min-height: 100vh;
-      overflow-x: hidden;
+      margin: 0;
     }
-
-    h1, #points {
-      background: rgba(255, 255, 255, 0.1);
-      display: inline-block;
-      padding: 10px 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
+    
+    .app-container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
-
-    input, button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin: 10px;
-      border-radius: 6px;
-      border: none;
+    
+    .app-header {
+      margin-bottom: 30px;
     }
-
-    input {
-      width: 250px;
+    
+    .app-title {
+      color: #FFD700;
+      font-size: 1.8rem;
+      margin-bottom: 5px;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
+    
+    .app-description {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      margin-bottom: 25px;
     }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    #taskSection, #timerSection, #completedTasks, #stats {
-      margin-top: 30px;
-    }
-
-    #timer {
-      font-size: 24px;
-      margin: 10px 0;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    li {
-      background-color: #1f1f1f;
-      margin: 5px auto;
-      padding: 10px;
-      width: 300px;
-      border-radius: 8px;
-    }
-
-    .confetti {
-      position: fixed;
-      top: 0;
-      left: 0;
+    
+    .task-input {
       width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 9999;
-      animation: fadeOut 3s forwards;
+      padding: 15px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      outline: none;
     }
-
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      100% { opacity: 0; }
+    
+    .btn {
+      background: linear-gradient(45deg, #3498db, #2980b9);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin: 10px 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(41, 128, 185, 0.4);
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(41, 128, 185, 0.6);
+    }
+    
+    .start-btn::before {
+      content: "➔";
+      margin-left: 8px;
+      font-size: 1.2rem;
+    }
+    
+    #doneBtn {
+      background: linear-gradient(45deg, #2ecc71, #27ae60);
+      display: none;
+    }
+    
+    .timer {
+      font-size: 3.5rem;
+      font-weight: bold;
+      color: #00ffaa;
+      margin: 20px 0;
+      font-family: 'Courier New', monospace;
+      text-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
+    }
+    
+    .stats-section {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 25px;
+    }
+    
+    .stats-title {
+      color: #FFD700;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    
+    .stat-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .stat-label {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+    
+    .stat-value {
+      color: #FFD700;
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+    
+    @media (max-width: 480px) {
+      .app-container {
+        padding: 20px;
+      }
+      
+      .timer {
+        font-size: 3rem;
+      }
     }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-  <h1>منظم المهام مع مؤقت ونقاط</h1>
-
-  <div id="points">النقاط: <span id="score">0</span></div>
-
-  <div id="taskSection">
-    <input type="text" id="taskInput" placeholder="اكتب مهمتك هنا">
-    <button onclick="startTask()">ابدأ المهمة</button>
+  <div class="app-container">
+    <div class="app-header">
+      <h1 class="app-title">منظم المهام الذكي</h1>
+      <p class="app-description">أداة فعالة لتنظيم وقتك وزيادة إنتاجيتك</p>
+    </div>
+    
+    <input type="text" class="task-input" id="taskInput" placeholder="اكتب مهمتك هنا">
+    <button class="btn start-btn" onclick="startTask()">ابدأ المهمة</button>
+    
+    <div class="timer" id="timer">25:00</div>
+    <button class="btn" id="doneBtn" onclick="completeTask()">إنهاء المهمة</button>
+    
+    <div class="stats-section">
+      <h3 class="stats-title">إحصائيات الأداء</h3>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">النقاط</div>
+          <div class="stat-value" id="score">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">المهام المكتملة</div>
+          <div class="stat-value" id="taskCount">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">الدقائق المنتجة</div>
+          <div class="stat-value" id="totalTime">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">أعلى سلسلة</div>
+          <div class="stat-value" id="streak">0</div>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div id="timerSection" style="display:none;">
-    <div>المهمة: <span id="currentTask"></span></div>
-    <div id="timer">25:00</div>
-    <button onclick="completeTask()">أنهيت المهمة</button>
-    <button onclick="cancelTask()">إلغاء</button>
-  </div>
-
-  <div id="completedTasks">
-    <h3>المهام المنجزة:</h3>
-    <ul id="taskList"></ul>
-  </div>
-
-  <div id="stats">
-    <h3>إحصائيات</h3>
-    <p>عدد المهام: <span id="tasksCount">0</span></p>
-    <p>الوقت المنتج (دقيقة): <span id="totalTime">0</span></p>
-    <p>أعلى سلسلة إنجاز: <span id="streak">0</span></p>
-  </div>
-
-  <audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3" preload="auto"></audio>
 
   <script>
+    // المتغيرات العامة
     let timer;
-    let timeLeft = 25 * 60;
+    let timeLeft = 1500; // 25 دقيقة بالثواني
     let score = 0;
-    let completed = [];
+    let tasksDone = 0;
+    let totalTime = 0;
     let streak = 0;
     let maxStreak = 0;
+    let currentTask = "";
 
+    // دالة بدء المهمة
     function startTask() {
-      const task = document.getElementById("taskInput").value.trim();
-      if (task === "") {
-        alert("من فضلك اكتب المهمة أولاً");
+      currentTask = document.getElementById("taskInput").value.trim();
+      
+      if (!currentTask) {
+        alert("الرجاء إدخال المهمة أولاً");
         return;
       }
 
-      document.getElementById("currentTask").innerText = task;
-      document.getElementById("taskSection").style.display = "none";
-      document.getElementById("timerSection").style.display = "block";
-
-      timeLeft = 25 * 60;
+      // إيقاف أي مؤقت سابق
+      if (timer) clearInterval(timer);
+      
+      // تهيئة الواجهة
+      document.getElementById("doneBtn").style.display = "inline-block";
+      document.getElementById("taskInput").disabled = true;
+      
+      // بدء المؤقت
+      timeLeft = 1500;
       updateTimerDisplay();
-      timer = setInterval(() => {
+      timer = setInterval(function() {
         timeLeft--;
         updateTimerDisplay();
+        
         if (timeLeft <= 0) {
           clearInterval(timer);
           streak = 0;
-          alert("انتهى الوقت! حاول مرة أخرى");
-          resetView();
+          alert("انتهى الوقت!");
+          resetTask();
         }
       }, 1000);
     }
 
+    // تحديث عرض المؤقت
     function updateTimerDisplay() {
-      const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-      const seconds = (timeLeft % 60).toString().padStart(2, '0');
-      document.getElementById("timer").innerText = ${minutes}:${seconds};
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      const display = 
+        (minutes < 10 ? "0" : "") + minutes + ":" + 
+        (seconds < 10 ? "0" : "") + seconds;
+      
+      document.getElementById("timer").textContent = display;
     }
 
+    // إكمال المهمة
     function completeTask() {
       clearInterval(timer);
-      const taskText = document.getElementById("currentTask").innerText;
-
+      
+      // تحديث الإحصائيات
       score += 10;
-      streak += 1;
+      tasksDone++;
+      totalTime += 25;
+      streak++;
       if (streak > maxStreak) maxStreak = streak;
-
-      completed.push(taskText);
-
-      document.getElementById("score").innerText = score;
-      document.getElementById("successSound").play();
-      launchConfetti();
-
-      renderTasks();
-      renderStats();
-      resetView();
+      
+      document.getElementById("score").textContent = score;
+      document.getElementById("taskCount").textContent = tasksDone;
+      document.getElementById("totalTime").textContent = totalTime;
+      document.getElementById("streak").textContent = maxStreak;
+      
+      resetTask();
     }
 
-    function cancelTask() {
-      clearInterval(timer);
-      streak = 0;
-      resetView();
-    }
-
-    function resetView() {
+    // إعادة تعيين المهمة
+    function resetTask() {
       document.getElementById("taskInput").value = "";
-      document.getElementById("taskSection").style.display = "block";
-      document.getElementById("timerSection").style.display = "none";
-    }
-
-    function renderTasks() {
-      const list = document.getElementById("taskList");
-      list.innerHTML = "";
-      completed.forEach(task => {
-        const li = document.createElement("li");
-        li.textContent = task;
-        list.appendChild(li);
-      });
-    }
-
-    function renderStats() {
-      document.getElementById("tasksCount").innerText = completed.length;
-      document.getElementById("totalTime").innerText = completed.length * 25;
-      document.getElementById("streak").innerText = maxStreak;
-    }
-
-    function launchConfetti() {
-      const confetti = document.createElement("div");
-      confetti.className = "confetti";
-      confetti.innerHTML = "✨✨✨ تهانينا! ✨✨✨";
-      confetti.style.fontSize = "40px";
-      confetti.style.color = "#ffd700";
-      confetti.style.textAlign = "center";
-      confetti.style.paddingTop = "20%";
-      document.body.appendChild(confetti);
-      setTimeout(() => confetti.remove(), 3000);
+      document.getElementById("taskInput").disabled = false;
+      document.getElementById("doneBtn").style.display = "none";
+      document.getElementById("timer").textContent = "25:00";
     }
   </script>
-
 </body>
 </html>
